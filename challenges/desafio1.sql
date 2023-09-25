@@ -1,23 +1,137 @@
--- Descomente e altere as linhas abaixo:
+DROP DATABASE IF EXISTS SpotifyClone;
+CREATE DATABASE IF NOT EXISTS SpotifyClone;
 
--- DROP DATABASE IF EXISTS SpotifyClone;
--- CREATE DATABASE IF NOT EXISTS SpotifyClone;
--- CREATE TABLE SpotifyClone.tabela1(
---     coluna1 tipo restricoes,
---     coluna2 tipo restricoes,
---     colunaN tipo restricoes,
--- ) engine = InnoDB;
--- CREATE TABLE SpotifyClone.tabela2(
---     coluna1 tipo restricoes,
---     coluna2 tipo restricoes,
---     colunaN tipo restricoes,
--- ) engine = InnoDB;
--- INSERT INTO SpotifyClone.tabela1 (coluna1, coluna2)
--- VALUES
---   ('exemplo de dados 1', 'exemplo de dados A'),
---   ('exemplo de dados 2', 'exemplo de dados B'),
---   ('exemplo de dados 3', 'exemplo de dados C');
--- INSERT INTO SpotifyClone.tabela2 (coluna1, coluna2)
--- VALUES
---   ('exemplo de dados 1', 'exemplo de dados X'),
---   ('exemplo de dados 2', 'exemplo de dados Y');
+CREATE TABLE SpotifyClone.plans(
+    plan_id INT NOT NULL AUTO_INCREMENT PRIMARY KEY,
+    name VARCHAR(20) NOT NULL,
+    price DOUBLE NOT NULL
+) engine = InnoDB;
+
+CREATE TABLE SpotifyClone.artists(
+    artist_id INT NOT NULL AUTO_INCREMENT PRIMARY KEY,
+    name VARCHAR(50)
+) engine = InnoDB;
+
+CREATE TABLE SpotifyClone.albums(
+	album_id INT NOT NULL AUTO_INCREMENT PRIMARY KEY,
+    name VARCHAR(50),
+    artist_id INT,
+    FOREIGN KEY (artist_id) REFERENCES artists (artist_id)
+);
+
+CREATE TABLE SpotifyClone.songs(
+	song_id	INT NOT NULL AUTO_INCREMENT PRIMARY KEY,
+    name	VARCHAR(50),
+    duration	INT,
+    album_id	INT,
+    FOREIGN KEY (album_id) REFERENCES SpotifyClone.albums (album_id)
+);
+
+CREATE TABLE SpotifyClone.users(
+	user_id	INT NOT NULL AUTO_INCREMENT PRIMARY KEY,
+    name	VARCHAR(50),
+    age	INT,
+    plan_id	INT,
+    signature_date	DATE,
+    FOREIGN KEY (plan_id) REFERENCES SpotifyClone.plans (plan_id)
+);
+
+CREATE TABLE SpotifyClone.artists_followers(
+	artist_id	INT,
+    user_id	INT,
+    CONSTRAINT PRIMARY KEY(artist_id, user_id),
+		FOREIGN KEY (artist_id) REFERENCES SpotifyClone.artists (artist_id),
+        FOREIGN KEY (user_id) REFERENCES SpotifyClone.users (user_id)
+);
+
+CREATE TABLE SpotifyClone.reproduction_history(
+	user_id INT,
+    song_id INT,
+    CONSTRAINT PRIMARY KEY(user_id,song_id),
+		FOREIGN KEY (user_id) REFERENCES SpotifyClone.users (user_id),
+        FOREIGN KEY (song_id) REFERENCES SpotifyClone.songs (song_id)
+);
+
+INSERT INTO SpotifyClone.plans (name, price)
+VALUES
+	('gratuito', '0.00'),
+	('universitário', '5.99'),
+	('pessoal', '6.99'),
+	('familiar', '7.99');
+    
+INSERT INTO SpotifyClone.artists (name)
+VALUES
+	('Beyoncé'),
+	('Queen'),
+	('Elis Regina'),
+	('Baco Exu do Blues'),
+	('Blind Guardian'),
+	('Nina Simone');
+    
+INSERT INTO SpotifyClone.albums (name, artist_id) VALUES
+	('Renaissance', '1'),
+	('Jazz', '2'),
+	('Hot Space', '2'),
+	('Falso Brilhante', '3'),
+	('Vento de Maio', '3'),
+	('QVVJFA?', '4'),
+	('Somewhere Far Beyond', '5'),
+	('I Put A Spell On You', '6');
+    
+INSERT INTO SpotifyClone.songs (song_id, name, duration, album_id) VALUES
+	('1', 'BREAK MY SOUL', '279', '1'),
+	('2', 'VIRGO\'S GROOVE', '369', '1'),
+	('3', 'ALIEN SUPERSTAR', '116', '1'),
+	('4', 'Don\'t Stop Me Now', '203', '2'),
+	('5', 'Under Pressure', '152', '3'),
+	('6', 'Como Nossos Pais', '105', '4'),
+	('7', 'O Medo de Amar é o Medo de Ser Livre', '207', '5'),
+	('8', 'Samba em Paris', '267', '6'),
+	('9', 'The Bard\'s Song', '244', '7'),
+	('10', 'Feeling Good', '100', '8');
+    
+INSERT INTO SpotifyClone.users (user_id, name, age, plan_id, signature_date) VALUES
+	('1', 'Barbara Liskov', '82', '1', '2019-10-20'),
+	('2', 'Robert Cecil Martin', '58', '1', '2017-01-06'),
+	('3', 'Ada Lovelace', '37', '4', '2017-12-30'),
+	('4', 'Martin Fowler', '46', '4', '2017-01-17'),
+	('5', 'Sandi Metz', '58', '4', '2018-04-29'),
+	('6', 'Paulo Freire', '19', '2', '2018-02-14'),
+	('7', 'Bell Hooks', '26', '2', '2018-01-05'),
+	('8', 'Christopher Alexander', '85', '3', '2019-06-05'),
+	('9', 'Judith Butler', '45', '3', '2020-05-13'),
+	('10', 'Jorge Amado', '58', '3', '2017-02-17');
+    
+INSERT INTO SpotifyClone.artists_followers (artist_id, user_id) VALUES
+	('1', '1'),
+	('2', '1'),
+	('3', '1'),
+	('1', '2'),
+	('3', '2'),
+	('2', '3'),
+	('4', '4'),
+	('5', '5'),
+	('6', '5'),
+	('6', '6'),
+	('1', '6'),
+	('6', '7'),
+	('3', '9'),
+	('2', '10');
+
+INSERT INTO SpotifyClone.reproduction_history (user_id, song_id) VALUES
+	('1', '8'),
+	('1', '2'),
+	('1', '10'),
+	('2', '10'),
+	('2', '7'),
+	('3', '10'),
+	('3', '2'),
+	('4', '8'),
+	('5', '8'),
+	('5', '5'),
+	('6', '7'),
+	('6', '1'),
+	('7', '4'),
+	('8', '4'),
+	('9', '9'),
+	('10', '3');
