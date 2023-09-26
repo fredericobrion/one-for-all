@@ -4,7 +4,7 @@ CREATE DATABASE IF NOT EXISTS SpotifyClone;
 CREATE TABLE SpotifyClone.plans(
     plan_id INT NOT NULL AUTO_INCREMENT PRIMARY KEY,
     name VARCHAR(20) NOT NULL,
-    price DOUBLE NOT NULL
+    price DECIMAL(10, 2) NOT NULL
 ) engine = InnoDB;
 
 CREATE TABLE SpotifyClone.artists(
