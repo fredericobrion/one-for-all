@@ -1,11 +1,27 @@
-CREATE TABLE SpotifyClone.helper_ages(
-	age_id INT NOT NULL AUTO_INCREMENT PRIMARY KEY,
-    description VARCHAR(50),
-    min_age INT NOT NULL,
-    max_age INT NOT NULL
-);
+SELECT
+	faixa_etaria,
+    COUNT(DISTINCT subconsulta.user_id) AS total_pessoas_usuarias,
+    COUNT(fav.song_id) AS total_favoritadas
+FROM(
+SELECT 'Até 30 anos' AS faixa_etaria, 
+           age,
+           user_id
+    FROM SpotifyClone.users AS u
+    WHERE age <= 30
+    UNION ALL
+    SELECT 'Entre 31 e 60 anos' AS faixa_etaria, 
+           age,
+           user_id
+    FROM SpotifyClone.users AS u
+    WHERE age > 30 AND age <= 60
+    UNION ALL
+    SELECT 'Maior de 60 anos' AS faixa_etaria, 
+           age,
+           user_id
+    FROM SpotifyClone.users AS u
+    WHERE age > 60) as subconsulta
+LEFT JOIN SpotifyClone.favorite_songs as fav ON subconsulta.user_id = fav.user_id
+GROUP BY faixa_etaria;
 
-INSERT INTO SpotifyClone.helper_ages(description, min_age, max_age) VALUES
-	("Até 30 anos", 0, 30),
-    ("Entre 31 e 60 anos", 31, 60),
-    ("Maior de 60 anos", 60, 999);
+
+
